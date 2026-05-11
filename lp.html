@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>やることリスト（関西版）| ほな、やりきろか！</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:  #1b5e20;
+      --green-main:  #2e7d32;
+      --green-mid:   #388e3c;
+      --green-light: #4caf50;
+      --green-pale:  #c8e6c9;
+      --green-bg:    #e8f5e9;
+      --white:       #ffffff;
+      --text-dark:   #1a2e1a;
+      --accent:      #ff8f00;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--white);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* ========= HERO ========= */
+    .hero {
+      background: var(--green-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 背景の丸装飾 */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      top: -120px; right: -120px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      bottom: -60px; left: -60px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 5px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: clamp(2.2rem, 8vw, 3.8rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 20px;
+      animation: fadeDown 0.7s 0.1s ease both;
+    }
+    .hero h1 span {
+      color: #a5d6a7;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 3vw, 1.15rem);
+      color: rgba(255,255,255,0.85);
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: 40px;
+      animation: fadeDown 0.7s 0.2s ease both;
+    }
+
+    .btn-hero {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(255,143,0,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      animation: fadeDown 0.7s 0.3s ease both;
+    }
+    .btn-hero:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(255,143,0,0.5);
+    }
+
+    .hero-note {
+      margin-top: 16px;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      animation: fadeDown 0.7s 0.4s ease both;
+    }
+
+    /* モックUI */
+    .hero-mockup {
+      margin-top: 56px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 340px;
+      width: 100%;
+      text-align: left;
+      animation: fadeUp 0.8s 0.5s ease both;
+      backdrop-filter: blur(4px);
+    }
+    .mock-header {
+      color: var(--white);
+      font-weight: 900;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      opacity: 0.9;
+    }
+    .mock-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      color: var(--white);
+      font-size: 0.88rem;
+    }
+    .mock-item .dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.6);
+      flex-shrink: 0;
+    }
+    .mock-item.done .dot {
+      background: #a5d6a7;
+      border-color: #a5d6a7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; color: var(--green-dark);
+    }
+    .mock-item.done span { text-decoration: line-through; opacity: 0.6; }
+
+    /* ========= FEATURES ========= */
+    .features {
+      background: var(--green-bg);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: var(--green-main);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 900;
+      color: var(--green-dark);
+      margin-bottom: 48px;
+      line-height: 1.3;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 20px rgba(30,90,30,0.1);
+      border-top: 4px solid var(--green-light);
+      transition: transform 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-4px); }
+    .feature-icon { font-size: 2.2rem; margin-bottom: 12px; }
+    .feature-title {
+      font-weight: 900;
+      font-size: 1rem;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    /* ========= KANSAI ========= */
+    .kansai-section {
+      background: var(--green-dark);
+      padding: 80px 24px;
+      text-align: center;
+      color: var(--white);
+    }
+    .kansai-section .section-label { color: #a5d6a7; }
+    .kansai-section .section-title { color: var(--white); }
+
+    .phrase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .phrase-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 18px;
+      text-align: left;
+    }
+    .phrase-emoji { font-size: 1.4rem; flex-shrink: 0; }
+    .phrase-text {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.5;
+    }
+    .phrase-text strong {
+      color: #a5d6a7;
+      display: block;
+      font-size: 1rem;
+    }
+
+    /* ========= CTA ========= */
+    .cta {
+      background: var(--white);
+      padding: 100px 24px;
+      text-align: center;
+    }
+    .cta .section-title { color: var(--green-dark); margin-bottom: 16px; }
+    .cta-sub {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+    .btn-cta {
+      display: inline-block;
+      background: var(--green-main);
+      color: var(--white);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 18px 48px;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(46,125,50,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(46,125,50,0.4);
+    }
+    .cta-note {
+      margin-top: 16px;
+      font-size: 0.78rem;
+      color: #aaa;
+    }
+
+    /* ========= FOOTER ========= */
+    footer {
+      background: var(--green-dark);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+    }
+
+    /* ========= ANIMATIONS ========= */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* スクロールアニメ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🌸 完全無料・登録不要</div>
+  <h1>やること、<span>関西弁</span>で<br>管理したら<br>なんか捗るで。</h1>
+  <p class="hero-sub">
+    シンプルなやることリストに<br>
+    関西弁のノリをプラスしただけやのに、<br>
+    なぜかちょっと楽しくなるやつ。
+  </p>
+  <a href="https://kansai-todo.vercel.app/" class="btn-hero">ほな、使うてみよか →</a>
+  <p class="hero-note">インストール不要・ブラウザだけでOKやで</p>
+
+  <div class="hero-mockup">
+    <div class="mock-header">📋 今日のやること</div>
+    <div class="mock-item">
+      <div class="dot"></div>
+      <span>資料まとめとかなあかん</span>
+    </div>
+    <div class="mock-item">
+      <div class="dot"></div>
+      <span>買い物いかなあかん</span>
+    </div>
+    <div class="mock-item done">
+      <div class="dot">✓</div>
+      <span>メール返しといたで</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title reveal">こんなアプリやで</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">とにかくシンプル</div>
+      <div class="feature-desc">入力して追加するだけ。アカウント登録もログインも一切なし。開いたら即使えるで。</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">💾</div>
+      <div class="feature-title">データは端末に保存</div>
+      <div class="feature-desc">サーバーに送ったりせえへん。ブラウザのlocalStorageに保存するから、プライバシーも安心やで。</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">スマホでもPCでも</div>
+      <div class="feature-desc">ブラウザさえあればどこでも使えるで。インストール不要やから気軽に試せるやん。</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🌸</div>
+      <div class="feature-title">関西弁UIがくせになる</div>
+      <div class="feature-desc">「追加すんで！」「やりきったで！」── なんかテンション上がって、タスクこなしたくなるで。</div>
+    </div>
+  </div>
+</section>
+
+<!-- KANSAI PHRASES -->
+<section class="kansai-section">
+  <div class="section-label">Kansai UI</div>
+  <h2 class="section-title reveal">こんな感じで話しかけてくるで</h2>
+
+  <div class="phrase-list">
+    <div class="phrase-item reveal">
+      <div class="phrase-emoji">✏️</div>
+      <div class="phrase-text">
+        <strong>追加すんで！</strong>
+        タスクを入力して押すだけや
+      </div>
+    </div>
+    <div class="phrase-item reveal">
+      <div class="phrase-emoji">🎉</div>
+      <div class="phrase-text">
+        <strong>全部やりきったやん！すごいやん、ほんまに！</strong>
+        全タスク完了したときに出てくるで
+      </div>
+    </div>
+    <div class="phrase-item reveal">
+      <div class="phrase-emoji">😅</div>
+      <div class="phrase-text">
+        <strong>ちゃんと入れてや〜！</strong>
+        空のまま追加しようとしたら怒られるで
+      </div>
+    </div>
+    <div class="phrase-item reveal">
+      <div class="phrase-emoji">🗑️</div>
+      <div class="phrase-text">
+        <strong>終わったやつ、まとめて消したるわ</strong>
+        完了済みタスクを一括削除するボタンや
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2 class="section-title reveal">ほな、やってみよか。</h2>
+  <p class="cta-sub reveal">
+    登録不要・無料・今すぐ使えるで。<br>
+    関西弁のやることリスト、一回試してみてや。
+  </p>
+  <a href="https://kansai-todo.vercel.app/" class="btn-cta reveal">アプリを開くで →</a>
+  <p class="cta-note reveal">ブラウザだけでOK。スマホでもPCでも動くで。</p>
+</section>
+
+<footer>
+  © 2026 やることリスト（関西版）｜ Made with ❤️ in 関西
+</footer>
+
+<script>
+  // スクロールで要素をフェードイン
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
