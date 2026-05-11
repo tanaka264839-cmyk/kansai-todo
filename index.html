@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>やることリスト（関西版）</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:  #1b5e20;
+      --green-main:  #2e7d32;
+      --green-mid:   #388e3c;
+      --green-light: #4caf50;
+      --green-pale:  #c8e6c9;
+      --green-bg:    #e8f5e9;
+      --white:       #ffffff;
+      --gray-light:  #f1f8f1;
+      --gray-mid:    #a5d6a7;
+      --text-dark:   #1a2e1a;
+      --text-mid:    #2e4a2e;
+      --shadow:      0 4px 16px rgba(30,90,30,0.18);
+      --radius:      12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--green-bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ヘッダー */
+    header {
+      width: 100%;
+      background: var(--green-main);
+      color: var(--white);
+      text-align: center;
+      padding: 18px 16px 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+    header p {
+      font-size: 0.78rem;
+      margin-top: 4px;
+      opacity: 0.85;
+    }
+
+    /* メインコンテナ */
+    main {
+      width: 100%;
+      max-width: 480px;
+      padding: 20px 16px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 入力エリア */
+    .input-area {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      border: 2px solid var(--green-light);
+    }
+    .input-area label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .input-row input {
+      flex: 1;
+      border: 2px solid var(--green-light);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-row input:focus {
+      border-color: var(--green-dark);
+    }
+    .input-row input::placeholder {
+      color: var(--gray-mid);
+    }
+    .btn-add {
+      background: var(--green-main);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 3px 8px rgba(46,125,50,0.3);
+    }
+    .btn-add:hover { background: var(--green-dark); }
+    .btn-add:active { transform: scale(0.97); }
+
+    /* カウンター */
+    .counter-bar {
+      display: flex;
+      gap: 10px;
+    }
+    .counter-card {
+      flex: 1;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 12px;
+      text-align: center;
+      border-top: 4px solid var(--green-light);
+    }
+    .counter-card.done-card { border-top-color: var(--green-dark); }
+    .counter-card .num {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--green-main);
+      line-height: 1;
+    }
+    .counter-card.done-card .num { color: var(--green-dark); }
+    .counter-card .label {
+      font-size: 0.72rem;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    /* フィルターボタン */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-filter {
+      flex: 1;
+      background: var(--white);
+      color: var(--green-dark);
+      border: 2px solid var(--green-pale);
+      border-radius: 8px;
+      padding: 8px 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-filter.active {
+      background: var(--green-main);
+      color: var(--white);
+      border-color: var(--green-main);
+    }
+    .btn-filter:hover:not(.active) { border-color: var(--green-mid); }
+
+    /* タスクリスト */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px 14px 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 5px solid var(--green-light);
+      transition: opacity 0.2s, border-color 0.2s;
+      animation: slideIn 0.2s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .task-card.completed {
+      border-left-color: var(--green-dark);
+      background: var(--gray-light);
+      opacity: 0.75;
+    }
+
+    .check-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 3px solid var(--green-light);
+      background: var(--white);
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+    }
+    .task-card.completed .check-btn {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+      color: var(--white);
+    }
+    .check-btn:hover { border-color: var(--green-dark); }
+
+    .task-text {
+      flex: 1;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .task-card.completed .task-text {
+      text-decoration: line-through;
+      color: #777;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #bbb;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+    .delete-btn:hover { color: #c62828; background: #ffeaea; }
+
+    /* 空メッセージ */
+    .empty-msg {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--green-mid);
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+    .empty-msg .emoji { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+
+    /* 全完了ボタン */
+    .clear-btn {
+      background: var(--white);
+      color: #c62828;
+      border: 2px solid #ef9a9a;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.15s;
+    }
+    .clear-btn:hover { background: #ffeaea; border-color: #c62828; }
+    .clear-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* フッター */
+    footer {
+      width: 100%;
+      background: var(--green-dark);
+      color: var(--green-pale);
+      text-align: center;
+      padding: 10px;
+      font-size: 0.72rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📋 やることリスト</h1>
+  <p>ほな、今日もがんばりや！</p>
+</header>
+
+<main>
+  <!-- 入力 -->
+  <div class="input-area">
+    <label>📝 やること、入れてみ？</label>
+    <div class="input-row">
+      <input type="text" id="taskInput" placeholder="例：買い物いかなあかん" maxlength="100">
+      <button class="btn-add" onclick="addTask()">追加すんで！</button>
+    </div>
+  </div>
+
+  <!-- カウンター -->
+  <div class="counter-bar">
+    <div class="counter-card">
+      <div class="num" id="totalCount">0</div>
+      <div class="label">全部のタスク</div>
+    </div>
+    <div class="counter-card">
+      <div class="num" id="remainCount">0</div>
+      <div class="label">まだやってへん</div>
+    </div>
+    <div class="counter-card done-card">
+      <div class="num" id="doneCount">0</div>
+      <div class="label">やりきったで！</div>
+    </div>
+  </div>
+
+  <!-- フィルター -->
+  <div class="filter-row">
+    <button class="btn-filter active" onclick="setFilter('all', this)">全部見せて</button>
+    <button class="btn-filter" onclick="setFilter('active', this)">まだやってへん</button>
+    <button class="btn-filter" onclick="setFilter('done', this)">終わったやつ</button>
+  </div>
+
+  <!-- タスク一覧 -->
+  <div class="task-list" id="taskList"></div>
+
+  <!-- 完了済み削除 -->
+  <button class="clear-btn" id="clearBtn" onclick="clearDone()">
+    🗑️ 終わったやつ、まとめて消したるわ
+  </button>
+</main>
+
+<footer>関西弁やることリスト｜データはこの端末に保存してるで</footer>
+
+<script>
+  let tasks = JSON.parse(localStorage.getItem('kansai-tasks') || '[]');
+  let currentFilter = 'all';
+
+  const emptyMessages = {
+    all:    ['🌸', 'まだ何もないで〜\nとりあえず一個入れてみ？'],
+    active: ['🎉', '全部やりきったやん！\nすごいやん、ほんまに！'],
+    done:   ['🌀', 'まだ何も終わってへんで〜\nがんばりや！'],
+  };
+
+  function save() {
+    localStorage.setItem('kansai-tasks', JSON.stringify(tasks));
+  }
+
+  function addTask() {
+    const input = document.getElementById('taskInput');
+    const text = input.value.trim();
+    if (!text) {
+      input.placeholder = 'ちゃんと入れてや〜！';
+      input.focus();
+      setTimeout(() => input.placeholder = '例：買い物いかなあかん', 1500);
+      return;
+    }
+    tasks.unshift({ id: Date.now(), text, done: false });
+    save();
+    render();
+    input.value = '';
+    input.focus();
+  }
+
+  function toggleTask(id) {
+    const t = tasks.find(t => t.id === id);
+    if (t) { t.done = !t.done; save(); render(); }
+  }
+
+  function deleteTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    save();
+    render();
+  }
+
+  function clearDone() {
+    tasks = tasks.filter(t => !t.done);
+    save();
+    render();
+  }
+
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  function render() {
+    const total  = tasks.length;
+    const done   = tasks.filter(t => t.done).length;
+    const remain = total - done;
+
+    document.getElementById('totalCount').textContent  = total;
+    document.getElementById('remainCount').textContent = remain;
+    document.getElementById('doneCount').textContent   = done;
+
+    const clearBtn = document.getElementById('clearBtn');
+    clearBtn.disabled = done === 0;
+
+    const filtered = tasks.filter(t => {
+      if (currentFilter === 'active') return !t.done;
+      if (currentFilter === 'done')   return t.done;
+      return true;
+    });
+
+    const list = document.getElementById('taskList');
+
+    if (filtered.length === 0) {
+      const [emoji, msg] = emptyMessages[currentFilter];
+      list.innerHTML = `<div class="empty-msg"><span class="emoji">${emoji}</span>${msg.replace('\n','<br>')}</div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(t => `
+      <div class="task-card ${t.done ? 'completed' : ''}">
+        <button class="check-btn" onclick="toggleTask(${t.id})" title="${t.done ? '戻すで' : '終わったで！'}">
+          ${t.done ? '✓' : ''}
+        </button>
+        <span class="task-text">${escapeHtml(t.text)}</span>
+        <button class="delete-btn" onclick="deleteTask(${t.id})" title="消したるわ">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Enterキーで追加
+  document.getElementById('taskInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  render();
+</script>
+</body>
+</html>
